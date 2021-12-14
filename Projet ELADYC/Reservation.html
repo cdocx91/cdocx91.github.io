@@ -1,0 +1,247 @@
+<!Doctype html>
+<head>
+<title>Reservation</title>
+<script src="src/Reservation.js"></script>
+</head>
+<body>
+<header>
+    <nav>
+        <span>ELADYC</span>
+    </nav>
+</header>
+
+<main>
+
+    <div class="container">
+        <h3> Formulaire de réservation de vols </h3><br>
+        <form id="flightResa" method="POST" onsubmit="return searchFlights(flightResa)">
+            <div class="flex">
+                <label for="flightFrom">Aéroport de départ : </label>
+                <input type="text" name="depart" id="autocomplete-airport-1" class="flight" required
+                    onchange="checkDistance(this)">
+                <label for="flightTo">Aéroport d'arrivée : </label>
+                <input type="text" name="arrivee" id="autocomplete-airport-2" class="flight" required
+                    onchange="checkDistance(this)">
+                <strong id="distance" class="">...</strong>
+                <strong>Km</strong>
+            </div>
+            <div class="flex">
+                <label for="depart">Date de départ : </label>
+                <input type="date" name="date" id="depart" class="flight" placeholder="JJ/MM/AAAA" max="2025-12-31"
+                    required>
+                <label for="retour">Date de retour : </label>
+                <input type="date" name="date" id="retour" class="flight" placeholder="JJ/MM/AAAA" required>
+            </div>
+            <div class="flex">
+                <label for="adulte">Nombre d'adultes (12 ans et +)</label>
+                <input type="number" name="passager" id="adulte" class="nbr" min="0" value="0" required>
+                <label for="enfant">Nombre d'enfants (- de 12 ans)</label>
+                <input type="number" name="passager" id="enfant" class="nbr" min="0" value="0" required>
+            </div>
+            <div class="flex">
+                <label for="eco">Classe éco</label>
+                <input type="radio" name="classe" id="eco" class="choixClasse" checked>
+                <label for="affaire">Classe affaire</label>
+                <input type="radio" name="classe" id="affaire" class="choixClasse">
+                <label for="premiere">Première classe</label>
+                <input type="radio" name="classe" id="premiere" class="choixClasse">
+            </div>
+            <div class="flex" id="divSearch">
+                <a href="Remerciement.html"><input type="submit" value="Rechercher"></a>
+            </div>
+            <div class="reset">
+                <input type="reset" value="Effacer" class="flight" id="reset">
+            </div>
+        </form>
+    </div>
+
+
+</main>
+<footer>
+
+<script src="https://cdn.jsdelivr.net/npm/airport-autocomplete-js@latest/dist/index.browser.min.js"></script>
+    <script>
+        AirportInput("autocomplete-airport-1");
+        var options = {
+            formatting: `<div class="$(unique-result)"
+                     single-result" 
+                     data-index="$(i)"> 
+                   $(IATA) </div>`
+        };
+        AirportInput("autocomplete-airport-2", options);
+        function distance(lat1, lon1, lat2, lon2) {
+            var R = 6371e3; // metres
+            lat1 = parseFloat(lat1)
+            lat2 = parseFloat(lat2)
+            lon1 = parseFloat(lon1)
+            lon2 = parseFloat(lon2)
+            var f1 = lat1.toRadians();
+            var f2 = lat2.toRadians();
+            var df = (lat2 - lat1).toRadians();
+            var dl = (lon2 - lon1).toRadians();
+            var a = Math.sin(df / 2) * Math.sin(df / 2) +
+                Math.cos(f1) * Math.cos(f2) *
+                Math.sin(dl / 2) * Math.sin(dl / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c;
+            return d;
+        }
+        if (typeof (Number.prototype.toRadians) === "undefined") {
+            Number.prototype.toRadians = function () {
+                return this * Math.PI / 180;
+            }
+        }
+        function checkInputData(id) {
+            var realId = "autocomplete-airport-" + id
+            return ([document.getElementById(realId).getAttribute("data-lat"), document.getElementById(realId).getAttribute(
+                "data-lon")])
+        }
+        function checkDistance(self) {
+            console.log("Input changed: " + self["id"])
+            setTimeout(function () {
+                console.log(self.getAttribute("data-lon"))
+                var idChanged = self["id"].slice(-1)
+                console.log(checkInputData(1))
+                console.log(checkInputData(2))
+                if (checkInputData(1)[0] && checkInputData(2)[0]) {
+                    var dst = distance(...checkInputData(1), ...
+                        checkInputData(2)) / 1000;
+                    document.getElementById("distance").innerHTML = parseInt(dst);
+                }
+            }, 200)
+        }
+    </script>
+</footer>
+<style>
+* {
+	box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+}
+
+body {
+	margin: 0;
+  background-color: #ffffff;
+}
+
+a {
+	text-decoration: none;
+}
+
+p,
+ul li,
+ol li {
+	font-size: 18px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Russo One', sans-serif;
+}
+
+nav {
+	background-color: #ffffff;
+	display: flex;
+	flex-flow: row nowrap;
+	height: 100px;
+  top: 0;
+  position: fixed;
+	width: 100%;
+  border-bottom: 5px solid #0190b8;
+}
+
+nav span {
+	color: #0190b8;
+	height: 100%;
+	font-size: 40px;
+	line-height: 100px;
+	padding-left: 40px;
+	width: 60%;
+}
+
+nav span a {
+	color: #0190b8;
+}
+
+img {
+	height: 90%;
+	width: 280px;
+}
+
+main {
+  margin-top: 130px;
+}
+
+h3 {
+	color: #0190b8;
+	font-size: 40px;
+	text-align: center;
+	margin: 15px;
+}
+
+.container {
+	margin: 0 auto;
+	width: 90%;
+	box-shadow: 3px 5px 10px #0190b8;
+}
+
+.flex {
+		display: flex;
+		justify-content: space-evenly;
+		margin-bottom: 30px;
+}
+
+.flexPaypal {
+	display: flex;
+	justify-content: center;
+}
+
+.reset {
+	margin-left: 20px;
+}
+
+.flight {
+	width: 200px;
+	height: 30px;
+	border-radius: 10px 3px;
+	margin-bottom: 50px;
+}
+
+.nbr {
+	width: 60px;
+	height: 30px;
+	border-radius: 15px 3px;
+	margin-bottom: 50px;
+}
+
+.choixClasse {
+	border-radius: 15px 3px;
+	margin-bottom: 50px;
+}
+
+#search {
+	background-color: rgb(0, 140, 255);
+	color: #ffffff;
+	width: 400px;
+	height: 50px;
+	margin-bottom: 1px;
+	font-size: 25px;
+
+}
+
+#divSearch {
+	margin-bottom: 2px;
+}
+
+.recap {
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
+#recap {
+	font-size: 15px;
+}
+p {
+	text-align: center;
+}
+</style>
+</body>
+</html>
